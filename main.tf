@@ -39,8 +39,8 @@ resource "terraform_data" "install_aws_cli" {
     uuid()
   ]
   provisioner "local-exec" {
-    command = "PIP_BREAK_SYSTEM_PACKAGES=1 pip install 'awscli ~= 1.0'; aws --version",
+    command = "PIP_BREAK_SYSTEM_PACKAGES=1 pip install 'awscli ~= 1.0'; aws --version"
   }
 
-  depends_on = [ terraform_data.aws_cli ]
+  depends_on = [terraform_data.aws_cli]
 }
