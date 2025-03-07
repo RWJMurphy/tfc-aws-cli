@@ -11,11 +11,9 @@ locals {
     pip : "pip --version",
     python3 : "python3 --version",
     mercurial : "hg version",
-    # Workflows
-    aws_cli_shim : "aws --version",
-    pip_install_aws : "PIP_BREAK_SYSTEM_PACKAGES=1 pip install 'awscli ~= 1.0'; aws --version",
   }
 }
+
 resource "terraform_data" "exec" {
   for_each = local.commands
 
@@ -25,4 +23,24 @@ resource "terraform_data" "exec" {
   provisioner "local-exec" {
     command = each.value
   }
+}
+
+resource "terraform_data" "aws_cli" {
+  triggers_replace = [
+    uuid()
+  ]
+  provisioner "local-exec" {
+    command = "aws --version"
+  }
+}
+
+resource "terraform_data" "install_aws_cli" {
+  triggers_replace = [
+    uuid()
+  ]
+  provisioner "local-exec" {
+    command = "PIP_BREAK_SYSTEM_PACKAGES=1 pip install 'awscli ~= 1.0'; aws --version",
+  }
+
+  depends_on = [ terraform_data.aws_cli ]
 }
